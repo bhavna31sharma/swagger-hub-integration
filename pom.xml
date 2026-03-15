@@ -70,6 +70,66 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>pre-integration-test</id>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-integration-test</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>integration-test</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+					<outputFileName>openapi.yaml</outputFileName>
+					<outputDir>${project.build.directory}</outputDir>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.swagger</groupId>
+				<artifactId>swaggerhub-maven-plugin</artifactId>
+				<version>1.0.10</version>
+				<executions>
+					<execution>
+						<id>upload-swagger</id>
+						<!-- integration-test fires after springdoc generates openapi.json -->
+						<phase>integration-test</phase>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Code-first: upload the spec generated from source annotations -->
+					<uploadType>inputFile</uploadType>
+					<api>todo-app</api>
+					<owner>test-063-ccf</owner>
+					<version>1.0.0</version>
+					<host>api.swaggerhub.com</host>
+					<protocol>https</protocol>
+					<inputFile>${project.build.directory}/openapi.yaml</inputFile>
+					<format>yaml</format>
+					<isPrivate>false</isPrivate>
+					<token>${env.SWAGGERHUB_API_KEY}</token>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
