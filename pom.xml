@@ -127,7 +127,7 @@
 					<protocol>https</protocol>
 					<inputFile>${project.build.directory}/openapi.yaml</inputFile>
 					<format>yaml</format>
-					<isPrivate>false</isPrivate>
+					<isPrivate>true</isPrivate>
 					<token>${env.SWAGGERHUB_API_KEY}</token>
 				</configuration>
 			</plugin>

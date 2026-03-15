@@ -52,3 +52,34 @@ Once the application is running, you can explore and interact with the REST API 
 - `POST /api/todos`: Create a new Todo item.
 - `PUT /api/todos/{id}`: Update an existing Todo item by its UUID.
 - `DELETE /api/todos/{id}`: Delete an existing Todo item by its UUID.
+
+## SwaggerHub Integration
+
+This project uses a **code-first** approach to publish the OpenAPI specification to [SwaggerHub](https://app.swaggerhub.com/test-063-ccf/home) automatically on every merge to `main`.
+
+### How it works
+
+```
+merge to main (GitHub Actions)
+    ├── 1. spring-boot:start          Boot the app locally on the runner
+    ├── 2. springdoc → /v3/api-docs.yaml   Generate openapi.yaml from annotations
+    ├── 3. spring-boot:stop           Shut down the app
+    └── 4. swaggerhub:upload          Push openapi.yaml to SwaggerHub (test-063-ccf/todo-app)
+```
+
+### Plugins used
+
+| Plugin | Version | Purpose |
+|---|---|---|
+| [`springdoc-openapi-maven-plugin`](https://github.com/springdoc/springdoc-openapi-maven-plugin) | 1.5 | Generates `openapi.yaml` by calling the live `/v3/api-docs.yaml` endpoint |
+| [`swaggerhub-maven-plugin`](https://github.com/swagger-api/swaggerhub-maven-plugin) | 1.0.10 | Uploads the generated spec to SwaggerHub |
+
+### Running the upload locally
+
+```bash
+mvn integration-test -DSWAGGERHUB_API_KEY=your_key_here
+```
+
+### Required secret
+
+Add `SWAGGERHUB_API_KEY` as an **Environment Secret** in the `demo` environment of your GitHub repository settings (Settings → Environments → demo → Add secret). Your SwaggerHub API key can be found at: Profile → Settings → API Keys.
