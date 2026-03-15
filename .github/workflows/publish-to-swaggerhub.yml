@@ -9,6 +9,7 @@ jobs:
   publish:
     name: Generate & Upload OpenAPI Spec
     runs-on: ubuntu-latest
+    environment: demo
 
     steps:
       - name: Checkout code
