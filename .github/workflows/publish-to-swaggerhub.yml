@@ -1,0 +1,27 @@
+name: Publish OpenAPI to SwaggerHub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: Generate & Upload OpenAPI Spec
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Start app, generate YAML spec, upload to SwaggerHub
+        env:
+          SWAGGERHUB_API_KEY: ${{ secrets.SWAGGERHUB_API_KEY }}
+        run: mvn integration-test --no-transfer-progress
